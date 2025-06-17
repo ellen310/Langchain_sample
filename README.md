@@ -4,14 +4,15 @@
 3. Recursive chunking
 4. Embedding 후 VectorDB 저장 및 검색
 
-Embedding model: huggingfaceembeddings sentence-transformers/all-minilm-l6-v2 (OpenAI 모델로 교체 예정)
+## Embedding model
+huggingfaceembeddings sentence-transformers/all-minilm-l6-v2 (OpenAI 모델로 교체 예정)
 
-## - Vector Store
+## Vector Store
 Qdrant <br/>
 https://qdrant.tech/documentation/guides/installation/
 <br/>
 https://artifacthub.io/packages/helm/qdrant/qdrant
-<br/><br/>
+<br/>
 
 - K8s
 ```
@@ -38,7 +39,7 @@ helm upgrade -i qdrant qdrant/qdrant \
 docker run -p 6333:6333 -d qdrant/qdrant
 ```
 
-## - 설치 시 참고사항 (문서 발췌)
+## 설치 참고 사항 (문서 발췌)
 If you want to run Qdrant in your own infrastructure, without any cloud connection, we recommend to install Qdrant in a Kubernetes cluster with our Qdrant Private Cloud Enterprise Operator. <br/>
 For testing or development setups, you can run the Qdrant container or as a binary executable. We also provide a Helm chart for an easy installation in Kubernetes.
 
