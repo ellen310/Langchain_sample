@@ -6,12 +6,14 @@ from langchain_community.document_loaders import (
     UnstructuredPowerPointLoader,
     PyPDFLoader
 )
+from dotenv import load_dotenv
+import os
 
 # 파일 유형별 URL 매핑
 URLS = {
-    "pptx": "https://csms39.moodler.kr/local/csmsdoc/download.php?id=5010&tp=m&pg=ubfile&item=0",
-    "docx": "https://csms39.moodler.kr/local/csmsdoc/download.php?id=5030&tp=m&pg=ubfile&item=0",
-    "pdf":  "https://csms39.moodler.kr/local/csmsdoc/download.php?id=5085&tp=m&pg=ubfile&item=0"
+    "pptx": os.getenv("URL_PPTX"),
+    "docx": os.getenv("URL_DOCX"),
+    "pdf":  os.getenv("URL_PDF"),
 }
 
 def load_docs_by_type(file_type: str):
