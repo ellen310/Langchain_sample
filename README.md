@@ -1,5 +1,10 @@
 # Langchain을 활용한 기본 RAG 구현 예시
-여러 형식의 문서를 로드, 확장자 별 컬렉션 생성(선택), 임베딩 후 저장 및 검색
+1. 여러 형식의 문서를 로드
+2. 확장자 별 Collection 생성
+3. Recursive chunking
+4. embedding 후 VectorDB 저장 및 검색
+
+Embedding model: huggingfaceembeddings sentence-transformers/all-minilm-l6-v2 (OpenAI 모델로 교체 예정)
 
 ## - Vector Store
 Qdrant <br/>
