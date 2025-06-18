@@ -5,7 +5,8 @@
 4. Embedding 후 VectorDB 저장 및 검색
 
 ## Embedding model
-huggingfaceembeddings sentence-transformers/all-minilm-l6-v2 (OpenAI 모델로 교체 예정)
+(신) OpenAIEmbeddings / text-embedding-3-small
+(구) huggingfaceembeddings / sentence-transformers/all-minilm-l6-v2 
 
 ## Vector Store
 Qdrant <br/>
