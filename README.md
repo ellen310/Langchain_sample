@@ -5,7 +5,7 @@
 4. Embedding 후 VectorDB 저장 및 검색
 
 ## Embedding model
-(신) OpenAIEmbeddings / text-embedding-3-small
+(신) OpenAIEmbeddings / text-embedding-3-small <br/>
 (구) huggingfaceembeddings / sentence-transformers/all-minilm-l6-v2 
 
 ## Vector Store
