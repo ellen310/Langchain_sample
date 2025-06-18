@@ -1,4 +1,5 @@
 from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 from dotenv import load_dotenv
@@ -9,11 +10,16 @@ load_dotenv()
 QDRANT_HOST = os.getenv("QDRANT_HOST")
 QDRANT_PORT = int(os.getenv("QDRANT_PORT"))
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME")
+DIMENSIONS = os.getenv("DIMENSIONS")
 DEFAULT_COLLECTION = os.getenv("DEFAULT_COLLECTION")
 
 def search_similar_documents(query, collection_name=DEFAULT_COLLECTION, top_k=3):
     # 1. 임베딩 모델 로드
-    embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+    # embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+    embedding_model = OpenAIEmbeddings(
+        model=EMBEDDING_MODEL_NAME,
+        dimensions=DIMENSIONS
+    )
 
     # 2. Qdrant 클라이언트 준비
     qdrant_client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
@@ -36,5 +42,5 @@ def search_similar_documents(query, collection_name=DEFAULT_COLLECTION, top_k=3)
 # 실행 예시
 if __name__ == "__main__":
     # 사용자 쿼리 입력
-    user_query = input("검색어를 입력하세요: ")
-    search_similar_documents(user_query, collection_name=DEFAULT_COLLECTION)  # docx_docs, pptx_docs
+    user_query = input("여기에 질문하세요: ")
+    search_similar_documents(user_query, collection_name=DEFAULT_COLLECTION)  # pdf_docs, docx_docs, pptx_docs

@@ -1,6 +1,8 @@
 import sys
+import os
 import requests
 import tempfile
+from dotenv import load_dotenv
 from langchain_community.document_loaders import (
     UnstructuredWordDocumentLoader,
     UnstructuredPowerPointLoader,
@@ -8,6 +10,9 @@ from langchain_community.document_loaders import (
 )
 from dotenv import load_dotenv
 import os
+
+# .env 로드
+load_dotenv()
 
 # 파일 유형별 URL 매핑
 URLS = {

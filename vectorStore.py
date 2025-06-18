@@ -7,21 +7,22 @@ from langchain_community.document_loaders import (
     PyPDFLoader
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance
 from dotenv import load_dotenv
 import os
+import getpass
 
 load_dotenv()
 
 QDRANT_HOST = os.getenv("QDRANT_HOST")
 QDRANT_PORT = int(os.getenv("QDRANT_PORT"))
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME")
+DIMENSIONS = os.getenv("DIMENSIONS")
 QDRANT_URL = f"http://{QDRANT_HOST}:{QDRANT_PORT}"
-
-# 파일 유형별 URL 매핑
 URLS = {
     "pptx": os.getenv("URL_PPTX"),
     "docx": os.getenv("URL_DOCX"),
@@ -58,11 +59,12 @@ def load_docs_by_type(file_type: str):
     return loader.load()
 
 # 청크 분할
-def chunk_documents(docs, chunk_size=100, chunk_overlap=50):
+def chunk_documents(docs, chunk_size=500, chunk_overlap=50):
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap
     )
+    print("✅ 청크 분할 완료")
     return splitter.split_documents(docs)
 
 # 메인 실행
@@ -84,7 +86,10 @@ if __name__ == "__main__":
         print("첫 청크:\n", chunks[0].page_content[:500])
 
         # 3. 임베딩 모델 로드
-        embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+        embedding_model = OpenAIEmbeddings(
+            model=EMBEDDING_MODEL_NAME,
+            dimensions=DIMENSIONS # text-embedding-3-small는 default 1536이 들어가지만, 명시적 설정
+        )
 
         # 4. Qdrant 초기화 및 컬렉션 생성
         qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
@@ -93,7 +98,7 @@ if __name__ == "__main__":
         if collection_name not in [col.name for col in qdrant.get_collections().collections]:
             qdrant.create_collection(
                 collection_name=collection_name,
-                vectors_config=VectorParams(size=384, distance=Distance.COSINE),
+                vectors_config=VectorParams(size=DIMENSIONS, distance=Distance.COSINE), 
             )
 
         # 5. 벡터로 저장
@@ -104,6 +109,7 @@ if __name__ == "__main__":
             url=QDRANT_URL,
             prefer_grpc=False,
             collection_name=collection_name,
+            force_recreate=True  # 기존 컬렉션 삭제 후 다시 생성
         )
 
         sample_vecs = embedding_model.embed_documents([doc.page_content for doc in chunks])
@@ -111,6 +117,7 @@ if __name__ == "__main__":
         print(sample_vecs[0])
 
         print("✅ Qdrant 저장 완료")
+        print(f"컬렉션 이름: {collection_name}")
 
     except Exception as e:
         print("❗️ 오류 발생:", e)
